@@ -42,4 +42,41 @@ describe("EventEmmiter", () => {
     expect(mockFunction1).toHaveBeenCalledTimes(1);
     expect(mockFunction1).toHaveBeenCalledWith("Hello world");
   });
+
+  it("should be call with another type of data", () => {
+    const mockFunction = jest.fn();
+    eventEmmiter.on("data", mockFunction);
+
+    eventEmmiter.on("data", mockFunction);
+
+    eventEmmiter.emit("data", { message: "Hello world" });
+    expect(mockFunction).toHaveBeenCalledWith("Hello world");
+
+    eventEmmiter.emit("data", { value: 123 });
+    expect(mockFunction).toHaveBeenCalledWith(123);
+
+    eventEmmiter.emit("data", { array: [1, 2, 3] });
+    expect(mockFunction).toHaveBeenCalledWith([1, 2, 3]);
+
+    eventEmmiter.emit("data", { user: { login: 123, password: "secret" } });
+    expect(mockFunction).toHaveBeenCalledWith({
+      login: 123,
+      password: "secret",
+    });
+  });
+
+  it("shoud call with multiple arguments", () => {
+    const mockFunction = jest.fn();
+    eventEmmiter.on("data", mockFunction);
+    eventEmmiter.emit("data", { message: "Hello", id: 1 });
+
+    expect(mockFunction).toHaveBeenCalledTimes(1);
+    expect(mockFunction).toHaveBeenCalledWith("Hello", 1);
+  });
+
+  it("should dont call with not register event", () => {
+    expect(() => {
+      eventEmmiter.emit("data", { message: "Hello world" });
+    }).not.toThrow();
+  });
 });
