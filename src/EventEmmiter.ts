@@ -19,7 +19,7 @@ class EventEmmiter implements EventEmmiterInterface {
 
   off(eventName: string, listener: Function): void {
     this._events = this._events.filter((event) => {
-      event.eventName === eventName && event.listener === listener;
+      return !(event.eventName === eventName && event.listener === listener);
     });
   }
 }
